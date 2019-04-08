@@ -1,0 +1,9 @@
+<apex:page sidebar="false" showHeader="false" docType="html-5.0">
+    <apex:form >
+        <center>
+            <h2>
+                No Conversation Found.
+            </h2>
+        </center>
+    </apex:form>
+</apex:page>

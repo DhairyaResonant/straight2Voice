@@ -1,0 +1,89 @@
+<apex:page lightningStylesheets="true" id="campaignPage" tabStyle="Straight2Voicemain_Campaigns__tab" controller="IOCampaingsS2V" action="{!pageAction}" >
+    <apex:includeScript value="{!$Resource.Jquery}"/>
+    <apex:outputPanel id="msg">  
+        <apex:pageMessages />  
+    </apex:outputPanel>
+    <apex:form id="campaignForm" >
+        <apex:pageBlock title="Straight 2 voicemail campaign" > 
+            <apex:pageblockbuttons >
+                <apex:commandLink styleClass="btn" style="text-decoration:none;padding:4px;" 
+                                  action="/apex/IOCampaignEdit?saveURL=/apex/IOCampaignsS2V&retURL=/apex/IOCampaignsS2V" value="Create Campaign"/>
+            </apex:pageblockbuttons>
+            
+            <apex:pageBlockTable value="{!campaigns}" var="cmp"   > 
+                <apex:column headerValue="Add Members" > 
+                    <apex:outputPanel rendered="{!IF(cmp.status='Completed',true,false)}">
+                        Add Member
+                    </apex:outputPanel>
+                    <apex:outputPanel rendered="{!IF(cmp.status='Completed',false,true)}">
+                        <apex:outputLink onclick="return popitup('/ui/campaign/CampaignManageMembersAddTab?campaignId={!cmp.id}&retURL=apex/IOCampaignsS2V')"  >
+                            Add Member
+                        </apex:outputLink>
+                    </apex:outputPanel>
+                    (<apex:outputText value="{0, number, 0}">
+                    <apex:param value="{!cmp.S2V_campRollUp__c}" />
+                    </apex:outputText> )
+                    
+                </apex:column> 
+                <apex:column value="{!cmp.Status}" />   
+                
+                <apex:column headerValue="Campaign Name" > 
+                    <apex:outputPanel rendered="{!IF(cmp.status='Completed',true,false)}">
+                        {!cmp.Name}
+                    </apex:outputPanel>
+                    <apex:outputPanel rendered="{!IF(cmp.status='Completed',false,true)}">
+                        <apex:outputLink value="/apex/IOCampaignEdit?id={!cmp.id}&saveURL=/apex/IOCampaignsS2V&retURL=apex/IOCampaignsS2V">{!cmp.Name}</apex:outputLink>
+                    </apex:outputPanel>
+                </apex:column> 
+                
+                <apex:column headerValue="Return Number"  >
+                    <apex:selectList size="1" styleClass="call{!cmp.id}" disabled="{!IF(cmp.status='Completed',true,false)}"  >
+                        <apex:selectOptions value="{!selectCaller}"/>
+                    </apex:selectList>                 
+                </apex:column> 
+                
+                <apex:column headerValue="Select voice Recording"  >
+                    <apex:selectList size="1" styleClass="sel{!cmp.id}" value="{!cmp.Recording_Name__c}" disabled="{!IF(cmp.status='Completed',true,false)}" >
+                        <apex:selectOptions value="{!selectVoiceMessages}"/>
+                    </apex:selectList>                 
+                </apex:column> 
+                
+                
+                <apex:column headerValue="Action"> 
+                    <apex:outputPanel rendered="{!IF(cmp.status='Completed',true,false)}">
+                        <a href="/apex/IOCallHistory?campaign_name={!cmp.Name}">Call History</a>
+                    </apex:outputPanel>
+                    <apex:outputPanel rendered="{!IF(cmp.status='Completed',false,true)}">
+                        <input type="button" class="btn" value="Start Send Out" onClick="createNewCampaign('{!cmp.id}', $('.sel{!cmp.id} :selected').val(), $('.call{!cmp.id} :selected').val() )"/>
+                    </apex:outputPanel>
+                </apex:column>  
+                
+            </apex:pageBlockTable>
+        </apex:pageBlock> 
+        <apex:actionFunction name="createNewCampaign" action="{!creatNewCampaign}" rerender="msg,script" oncomplete="proccedSyncing()" >
+            <apex:param name="id" value="" assignTo="{!selectedCampId}" />
+            <apex:param name="audioName" value="" assignTo="{!selectedVoice}" />
+            <apex:param name="callerID" value="" assignTo="{!callerID}" />
+        </apex:actionFunction> 
+        <apex:actionFunction name="syncNewCampaign" action="{!syncNewCampaign}"  >
+            
+        </apex:actionFunction> 
+        
+    </apex:form>
+    <apex:outputPanel id="script"><script>
+        function proccedSyncing()
+        {
+            if(!{!error})
+                syncNewCampaign();
+        }
+        </script>
+    </apex:outputPanel>   
+    <script language="javascript" type="text/javascript"> 
+    function popitup(url) {
+        newwindow=window.open(url,'name','height=500,width=870');
+        if (window.focus) {newwindow.focus()}
+        return false;
+    } 
+    </script>
+    
+</apex:page>

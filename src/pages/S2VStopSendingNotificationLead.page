@@ -1,0 +1,3 @@
+<apex:page standardController="Lead" extensions="S2VStopSendingNotificationLead" action="{!stopSendingVM}">
+    
+</apex:page>

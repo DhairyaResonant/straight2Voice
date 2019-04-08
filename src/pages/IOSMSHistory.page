@@ -1,0 +1,20 @@
+<apex:page lightningStylesheets="true" docType="html-5.0" id="p1" standardStylesheets="true" action="{!pageAction}" controller="IOCallSMSController" >
+    <apex:form >
+        <apex:pageBlock title="SMS History" > 
+            <apex:pageBlockTable value="{!objects}" var="obj" columns="7">
+                <apex:column headerValue="From Number" > {!obj.from_number}  </apex:column>
+                <apex:column headerValue="To Number" > {!obj.to_number}  </apex:column>
+                <apex:column headerValue="Message Content" > {!obj.message}  </apex:column>
+                <apex:column headerValue="SMS Sent Date" > {!obj.submit_date}  </apex:column>
+                
+                <apex:column headerValue="Status" > {!obj.submit_status}  </apex:column>
+            </apex:pageBlockTable>
+            <apex:pageBlockButtons >
+                
+                <apex:commandButton disabled="{!prev == null}" value="Prev" action="{!prev}" />
+                <apex:commandButton disabled="{!next == null}" value="Next" action="{!next}" />
+                
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

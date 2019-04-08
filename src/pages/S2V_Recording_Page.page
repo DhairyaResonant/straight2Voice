@@ -1,0 +1,833 @@
+<!-- New Recording Page -->
+<!-- Created By: Dhrudeep Shah -->
+<!-- Desc : 1 to 10 Voicemail recording -->
+
+<apex:page tabStyle="S2V_Recordings__tab" controller="S2VRecordingClass" action="{!pageAction}" sidebar="false" showHeader="true" standardStylesheets="false">
+    
+    <apex:includeScript value="{!$Resource.Jquery}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.SLDS1050, 'styles/salesforce-lightning-design-system.min.css')}" />  
+    <apex:includeScript value="../../soap/ajax/26.0/connection.js" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"/>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"/>
+        <style>
+        .row {
+            
+            
+            
+        }
+    
+    
+    </style>
+    <script type="text/javascript">
+        (function() {
+            window.onload = ready;
+            window.microm = null;
+            var status, currentTime, duration;
+            
+            function ready() {
+                window.microm = new Microm();
+                
+                status = $('#status span');
+                currentTime = $('#current-time span');
+                duration = $('#duration span');
+                
+                // Microm events
+                microm.on('timeupdate', updateCurrentTime);
+                microm.on('loadedmetadata', onLoaded);
+                microm.on('play', onPlayEvent);
+                microm.on('pause', onPauseEvent);
+                microm.on('ended', onEndEvent);
+                
+                // DOM element events
+                click('#recordBtn1',onRecord);
+                click('#recordBtn2',onRecord1);
+                click('#recordBtn3',onRecord2);
+                click('#recordBtn4',onRecord3);
+                click('#recordBtn5',onRecord4);
+                click('#recordBtn6',onRecord5);
+                click('#recordBtn7',onRecord6);
+                click('#recordBtn8',onRecord7);
+                click('#recordBtn9',onRecord8);
+                click('#recordBtn10',onRecord9);
+                // click('#recordBtn6',onRecord5);
+                //click('#recordBtn7',onRecord6);
+                
+                //click('#play', onPlay);
+                //click('#pauseBtn', onPauseRecording);
+                click('#stopBtn1', onStop);
+                click('#stopBtn2', onStop1);
+                click('#stopBtn3', onStop2);
+                click('#stopBtn4', onStop3);
+                click('#stopBtn5', onStop4);
+                click('#stopBtn6', onStop5);
+                click('#stopBtn7', onStop6);
+                click('#stopBtn8', onStop7);
+                click('#stopBtn9', onStop8);
+                click('#stopBtn10', onStop9);
+                
+                //click('#get-mp3', onGetMp3);
+                //click('#get-wav', onGetWav);
+                //click('#get-base64', onGetBase64);
+                //click('#download', onDownload);
+            }
+            
+            function onLoaded(time) {
+                duration.innerHTML = time;
+            }
+            
+            function updateCurrentTime(time) {
+                currentTime.innerHTML = time;
+            }
+            
+            function onPlayEvent() {
+                status.innerHTML = 'Playing';
+            }
+            
+            function onPauseEvent(currentTime) {
+                status.innerHTML = 'Paused';
+            }
+            
+            function onEndEvent() {
+                status.innerHTML = 'Ended';
+            }
+            
+            
+            function onRecord() {
+                
+                microm.record().then(function() {
+                    status.innerHTML = 'Recording';
+                    onRecordClick('1');
+                }).catch(function(error) {
+                    console.log('error recording', error);
+                })
+            }
+            function onRecord1() {
+                
+                microm.record().then(function() {
+                    status.innerHTML = 'Recording';
+                    onRecordClick('2');
+                }).catch(function(error) {
+                    console.log('error recording', error);
+                })
+            }
+            function onRecord2() {
+                
+                microm.record().then(function() {
+                    status.innerHTML = 'Recording';
+                    onRecordClick('3');
+                }).catch(function(error) {
+                    console.log('error recording', error);
+                })
+            }
+            function onRecord3() {
+                
+                microm.record().then(function() {
+                    status.innerHTML = 'Recording';
+                    onRecordClick('4');
+                }).catch(function(error) {
+                    console.log('error recording', error);
+                })
+            }
+            function onRecord4() {
+                
+                microm.record().then(function() {
+                    status.innerHTML = 'Recording';
+                    onRecordClick('5');
+                }).catch(function(error) {
+                    console.log('error recording', error);
+                })
+            }
+            
+            function onRecord5() {
+                
+                microm.record().then(function() {
+                    status.innerHTML = 'Recording';
+                    onRecordClick('6');
+                }).catch(function(error) {
+                    console.log('error recording', error);
+                })
+            }
+            function onRecord6() {
+                
+                microm.record().then(function() {
+                    status.innerHTML = 'Recording';
+                    onRecordClick('7');
+                }).catch(function(error) {
+                    console.log('error recording', error);
+                })
+            }
+            function onRecord7() {
+                
+                microm.record().then(function() {
+                    status.innerHTML = 'Recording';
+                    onRecordClick('8');
+                }).catch(function(error) {
+                    console.log('error recording', error);
+                })
+            }
+            function onRecord8() {
+                
+                microm.record().then(function() {
+                    status.innerHTML = 'Recording';
+                    onRecordClick('9');
+                }).catch(function(error) {
+                    console.log('error recording', error);
+                })
+            }
+            function onRecord9() {
+                
+                microm.record().then(function() {
+                    status.innerHTML = 'Recording';
+                    onRecordClick('10');
+                }).catch(function(error) {
+                    console.log('error recording', error);
+                })
+            }
+            
+            function onPlay() {
+                console.log('onPlay');
+                microm.play();
+            }
+            
+            function onPause() {
+                console.log('onPause');
+                microm.pause();
+            }
+            
+            function onPauseRecording() {
+                microm.pauseRecording().then(function(mp3) {
+                    status.innerHTML = 'Paused';
+                });
+                console.log('onPauseRecording');
+                //microm.isRecording = false;
+                onPauseClick();
+                
+            }
+            
+            function onResumeRecording() {
+                microm.resumeRecording().then(function(mp3) {
+                    status.innerHTML = 'Paused';
+                });
+                console.log('onResumeRecording');
+                //microm.isRecording = false;
+                //onPauseClick();
+                
+            }
+            
+            function onStop() {
+                
+                microm.stop().then(function(mp3) {
+                    status.innerHTML = 'Paused';
+                    document.getElementById('save1').href = microm.getUrl();
+                    
+                    setBlob(microm.getBlob());
+                    getPlayerReady('1');
+                });
+                
+                onStopClick('1');
+            }
+            
+            function onStop1() {
+                
+                microm.stop().then(function(mp3) {
+                    status.innerHTML = 'Paused';
+                    document.getElementById('save2').href = microm.getUrl();
+                    
+                    setBlob(microm.getBlob());
+                    getPlayerReady('2');
+                });
+                
+                onStopClick('2');
+            }function onStop2() {
+                
+                microm.stop().then(function(mp3) {
+                    status.innerHTML = 'Paused';
+                    document.getElementById('save3').href = microm.getUrl();
+                    
+                    setBlob(microm.getBlob());
+                    getPlayerReady('3');
+                });
+                
+                onStopClick('3');
+            }function onStop3() {
+                microm.stop().then(function(mp3) {
+                    status.innerHTML = 'Paused';
+                    document.getElementById('save4').href = microm.getUrl();
+                    
+                    setBlob(microm.getBlob());
+                    getPlayerReady('4');
+                });
+                
+                onStopClick('4');
+            }function onStop4() {
+                
+                microm.stop().then(function(mp3) {
+                    status.innerHTML = 'Paused';
+                    document.getElementById('save5').href = microm.getUrl();
+                    
+                    setBlob(microm.getBlob());
+                    getPlayerReady('5');
+                });
+                
+                onStopClick('5');
+            }
+            function onStop5() {
+                
+                microm.stop().then(function(mp3) {
+                    status.innerHTML = 'Paused';
+                    document.getElementById('save6').href = microm.getUrl();
+                    
+                    setBlob(microm.getBlob());
+                    getPlayerReady('6');
+                });
+                
+                onStopClick('6');
+            }
+            function onStop6() {
+                
+                microm.stop().then(function(mp3) {
+                    status.innerHTML = 'Paused';
+                    document.getElementById('save7').href = microm.getUrl();
+                    
+                    setBlob(microm.getBlob());
+                    getPlayerReady('7');
+                });
+                
+                onStopClick('7');
+            }
+            function onStop7() {
+                
+                microm.stop().then(function(mp3) {
+                    status.innerHTML = 'Paused';
+                    document.getElementById('save8').href = microm.getUrl();
+                    
+                    setBlob(microm.getBlob());
+                    getPlayerReady('8');
+                });
+                
+                onStopClick('8');
+            }
+            function onStop8() {
+                
+                microm.stop().then(function(mp3) {
+                    status.innerHTML = 'Paused';
+                    document.getElementById('save9').href = microm.getUrl();
+                    
+                    setBlob(microm.getBlob());
+                    getPlayerReady('9');
+                });
+                
+                onStopClick('9');
+            }
+            function onStop9() {
+                
+                microm.stop().then(function(mp3) {
+                    status.innerHTML = 'Paused';
+                    document.getElementById('save10').href = microm.getUrl();
+                    
+                    setBlob(microm.getBlob());
+                    getPlayerReady('10');
+                });
+                
+                onStopClick('10');
+            }
+            
+            function onGetMp3() {
+                microm.getMp3().then(function(mp3) {
+                    console.log('onGetMp3', mp3);
+                });
+            }
+            
+            function onGetWav() {
+                console.log('onGetWav');
+                microm.getWav();
+            }
+            
+            function onGetBase64() {
+                microm.getBase64().then(function(base64string) {
+                    console.log(base64string);
+                });
+            }
+            
+            function onDownload() {
+                microm.download('microm');
+            }
+            
+            function $(selector){
+                return document.querySelector(selector);
+            }
+            
+            function click(selector,callback){
+                $(selector).addEventListener('click',callback);
+            }
+        })();
+    </script>
+    <script>
+    var option = 0;
+    var theInterval;
+    var counter = 0;
+    var limitDuration = 120;
+    var recordingStarted = false;
+    function alertIploadComplete(indx)
+    {
+        //$( "#status"+indx ).text('Uploaded Successfully!');
+        setTimeout(function(){
+            $( "#status"+indx ).text('');
+            $( "#loader"+indx ).hide();
+            location.reload();
+        }, 1000);
+        console.log('Done...');
+    }
+    var base64;
+    var chunks;
+    var nChunk = 0;
+    var pureBlob;
+    function setBlob(b)
+    {
+        
+        pureBlob = b;
+    }
+    function convertDataURIToBinary(dataURI) {
+        var BASE64_MARKER = ';base64,';
+        var base64Index = dataURI.indexOf(BASE64_MARKER) + BASE64_MARKER.length;
+        var base64 = dataURI.substring(base64Index);
+        var raw = window.atob(base64);
+        var rawLength = raw.length;
+        var array = new Uint8Array(new ArrayBuffer(rawLength));
+        
+        for(i = 0; i < rawLength; i++) {
+            array[i] = raw.charCodeAt(i);
+        }
+        return array;
+    }
+    function getPlayerReady(indxnum)
+    {
+        
+        var reader = new window.FileReader();
+        reader.readAsDataURL(pureBlob);
+        reader.onloadend = function() {
+            base64 = reader.result;
+            var binary= convertDataURIToBinary(base64);
+            var blob=new Blob([binary], {type : 'audio/mp3'});
+            var blobUrl = URL.createObjectURL(blob);
+            $("#playerSrc"+indxnum).attr("src", blobUrl);
+            $("#audio"+indxnum)[0].pause();
+            $("#audio"+indxnum)[0].load();//suspends and restores all audio element
+            
+            base64 = base64.split(',')[1];
+            $( "#loader"+indxnum ).hide();
+            $( "#status" ).text('');
+        }
+    }
+    function getfileName()
+    {
+        return $('#recName').val().replace(" ","_")+".mp3";
+    }
+    function startProgressBar(srnum)
+    {
+        theInterval = setInterval(function(){
+            counter++;
+            var percent = (counter/limitDuration)*100;
+            $( "#bar"+srnum ).prop("style","width:"+percent+"%");
+            var minute = "0"+Math.floor(counter/60);
+            var second = counter % 60;
+            second = (second >=10 ? "" : "0")+second;
+            $( "#bar"+srnum ).html(minute+":"+second);
+            if(counter == limitDuration)
+            {
+                $("#stopBtn"+srnum).trigger('click');
+            }
+        }, 1000);
+        return false;
+    }
+    
+    function stopProgressBar(indx)
+    {
+        clearInterval(theInterval);
+        $( "#status"+indx).text('');
+        
+        
+    }
+    
+    function onRecordClick(srnum)
+    {
+        
+        $('[id*="saveButton"]').hide();
+        
+        $('[id*="recordBtn"]').prop('disabled',true);
+        
+        option = 1;
+        if(!recordingStarted) {
+            recordingStarted = !recordingStarted;
+        }
+        $( "#recordBtn"+srnum ).prop('disabled',true);
+        $( "#pauseBtn"+srnum ).prop('disabled',false);
+        $( "#stopBtn"+srnum ).prop('disabled',false);
+        startProgressBar(srnum);
+    }
+    
+    function onPauseClick()
+    {
+        option = 1;
+        $( "#recordBtn" ).prop('disabled',false);
+        $( "#pauseBtn" ).prop('disabled',true);
+        $( "#stopBtn" ).prop('disabled',false);
+        stopProgressBar();
+    }
+    
+    function onStopClick(srnum)
+    {
+        option = 1;
+        
+        $( "#pauseBtn"+srnum ).prop('disabled',true);
+        $( "#stopBtn"+srnum ).prop('disabled',true);
+        $( "#saveBtn"+srnum ).prop('disabled',false);
+        $("#saveButton"+srnum).show();
+        
+        $( "#loader"+srnum ).show();
+        $( "#status"+srnum).text('Encoding...');
+        $("#playbtn"+srnum).prop('disabled',false);
+        $('[id*="recordBtn"]').prop('disabled',false);
+        
+        
+        recordingStarted = !recordingStarted;
+        stopProgressBar(srnum);
+        
+        counter = 0;
+        <apex:repeat value="{!rcrdings}" var="avails">
+            $("#recordBtn"+{!avails}).prop('disabled',true);
+        $("#DeleteButton"+{!avails}).show();
+        </apex:repeat>
+        
+        
+    }
+    
+    /*function callVoiceRecord()
+    { 
+        var countryCode = $('#CountryCode').val();
+
+
+        if($('#phoneNumberVoice').val()  == "")
+        {
+            alert('Please enter phone number');
+            return;
+        } 
+        if($('#recName').val().replace(" ","_") == "")
+        {
+            alert('Please enter audio name');
+            return;
+        }
+
+
+        if(Math.round($('#phoneNumberVoice').val()) != $('#phoneNumberVoice').val()) {
+            alert("Please enter numbers in phone field.");
+            return;
+        }
+        //status.set
+        //loader.show
+
+        $( "#loader" ).show();
+        $( "#status" ).text('Processing...');
+
+        var bodyVoice = {"name":getfileName,"phone":$('#phoneNumberVoice').val(),"codephone:":countryCode,"SaleslforceUserID":"{!$User.Id}"};
+
+        $.ajax({
+            "async": true,
+            "crossDomain": true,
+            "url": "{!JSENCODE(setting.url__c)}/api/v1/recording/",
+            "method": "POST",
+            "headers": {
+                "authorization": "{!authorizationHeader}"
+            },
+            "data": bodyVoice, 
+            error: function(){
+                alert('Try Again!');
+            }
+        }).done(function(data) {
+            console.log(data);
+            alertIploadComplete();
+        }); 
+    }*/
+    
+    
+    function onSaveClick(isRecording,indx)
+    {
+        
+        /*  if($('#recName').val().replace(" ","_") == "")
+        {
+            alert('Please enter audio name');
+            return;
+        }*/
+        
+        $( "#loader"+indx ).show();
+        $( "#status"+indx ).text('Processing...');
+        $( "#saveBtn"+indx ).prop('disabled',true);
+        $( "#recordBtn"+indx ).prop('disabled',false);
+        $( "#pauseBtn"+indx ).prop('disabled',true);
+        $( "#stopBtn"+indx ).prop('disabled',true);
+        $('[id*="saveBtn"]').prop('disabled',true);
+        $('[id*="recordBtn"]').prop('disabled',true);
+        $('[id*="pauseBtn"]').prop('disabled',true);
+        $('[id*="stopBtn"]').prop('disabled',true);
+        $('[id*="playbtn"]').prop('disabled',true);
+        $('[id*="DeleteButton"]').prop('disabled',true);
+        
+        //saveToAttachment();
+        
+        var fd = new FormData();
+        var file;
+        if(isRecording)
+        {
+            file = new File([pureBlob], 'sound.mp3', {type: pureBlob.type, lastModified: Date.now()});
+        }
+        else
+        {
+            file = $('#file').prop('files')[0];
+        }
+        fd.append("name", indx+'-{!$User.FirstName} {!$User.LastName}.mp3');
+        fd.append('file', file );
+        fd.append("RecordingNumber",indx);
+        fd.append("SaleslforceUserID","{!$User.Id}");
+        fd.append("Description",$("#description"+indx).val());
+        $.ajax({
+            "async": true,
+            "crossDomain": true,
+            "url": "{!JSENCODE(setting.url__c)}/api/v1/upload-audio/",
+            "method": "POST",
+            "headers": {
+                "authorization": "{!authorizationHeader}"
+            },
+            "processData": false,
+            "contentType": false,
+            "mimeType": "multipart/form-data",
+            "data": fd
+        }).done(function(data) {
+            console.log(data);
+            alertIploadComplete(indx);
+        });
+        
+    }
+    
+    
+    function Deleteclick(indx)
+    {
+        
+        $( "#loader"+indx ).show();
+        $( "#status"+indx ).text('Processing...');
+        $( "#saveBtn"+indx ).prop('disabled',true);
+        $( "#recordBtn"+indx ).prop('disabled',false);
+        $( "#pauseBtn"+indx ).prop('disabled',true);
+        $( "#stopBtn"+indx ).prop('disabled',true);
+        $("#recordids"+indx).val();
+        $('[id*="DeleteButton"]').hide();
+        $("#DeleteButton"+indx).show();
+        
+        //saveToAttachment();
+        
+        $.ajax({
+            "async": true,
+            "crossDomain": true,
+            "url": "{!JSENCODE(setting.url__c)}/api/v1/recording/"+$("#recordids"+indx).val()+"/",
+            "method": "Delete",
+            "headers": {
+                "authorization": "{!authorizationHeader}"
+            },
+            "processData": false,
+            "contentType": false,
+            
+        }).done(function(data) {
+            console.log(data);
+            alertIploadComplete(indx);
+        });
+        
+    }
+    function getRecording(ele, index, link)
+    {    
+        console.log(link);
+        if(link != ''){
+            ele.value="Waiting...";
+            ele.disabled = true;
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.S2VRecordingClass.getRecBuffer}',
+                link, 
+                function(result, event){
+                    if (event.status) {
+                        
+                        document.getElementById('playerSrc'+index).src = "data:audio/wav;base64,"+result;
+                        document.getElementById('audio'+index).style.visibility = 'visible';
+                        
+                        document.getElementById('audio'+index).load();
+                        //    ele.style.visibility = 'hidden';
+                        ele.value="Play";
+                        $('#audio'+index).toggle();
+                        
+                    } else if (event.type === 'exception') {
+                        ele.style.visibility = 'hidden';
+                        
+                        
+                    } else {
+                        ele.style.visibility = 'hidden';
+                        
+                    }
+                }, 
+                {escape: true}
+            );
+            
+        } else {
+            ShowPlay(index);
+        }
+    }
+    function saveAll(indx)
+    {
+        if(option == 1)
+        {
+            onSaveClick(true,indx);
+        }
+        else if(option == 2)
+        {
+            onSaveClick(false);
+        }
+            else if(option == 3)
+            {
+                callVoiceRecord();
+            }
+    }
+    function ShowPlay(indx){
+        
+        $('#audio'+indx).toggle();
+        
+        
+    }
+    </script>
+    
+    
+    <style>
+        Button:disabled {
+        background: #aaa;
+        }
+        
+        
+        .w3-light-grey,.w3-hover-light-grey:hover,.w3-light-gray,.w3-hover-light-gray:hover{color:#000!important;background-color:#f1f1f1!important}
+        .w3-container{padding:0px 0px}
+        .w3-green,.w3-hover-green:hover{color:#fff!important;background-color:#4CAF50!important}
+        .w3-bar-block.w3-center .w3-bar-item{text-align:center}
+        
+        #bar
+        {
+        overflow: visible;
+        white-space: nowrap;
+        padding: 15px 0px 15px 0px;
+        }
+    </style> 
+    
+    <div class="container">
+        <br/>
+        <apex:variable var="index" value="{!1}"/>
+        
+        <table class="table" width="100%">
+            
+            <div class="row" style="background-color : lightblue;">
+                <div class="col-sm-1 " align="center" style="background-color : lightblue;">No.</div>
+                <div class="col-sm-2 " align="center" style="background-color : lightblue;">Record</div>
+                <div class="col-sm-3 " align="center" style="background-color : lightblue;">Prograss Bar</div>
+                <div class="col-sm-2 " align="center" style="background-color : lightblue;">Play</div>
+                <div class="col-sm-1 " align="center" style="background-color : lightblue;">Save or Delete</div>
+                <div class="col-lg-3 " align="center" style="background-color : lightblue;">Instructions</div>
+                
+                
+            </div>
+            
+            <hr/>
+            <apex:repeat value="{!numbers}" var="item"  >
+                
+                <tbody>
+                    <div class="row">
+                        <div class="col-sm-1" align="center">{!index}</div>
+                        <div class="col-sm-2" align="center"> 
+                            <button Id="recordBtn{!index}" class="slds-button slds-button_neutral" style="height:35px;">
+                                <b style="color:red" >⚫</b> Record</button>
+                            <button Id="stopBtn{!index}" class="slds-button slds-button_destructive" style="height:35px;">
+                                <b style="font-size: 13px;">∎</b> Stop</button>
+                        </div>
+                        <div class="col-sm-3" >
+                            <div class="w3-light-grey">
+                                <div align="center" class="w3-container w3-green w3-center" id="bar{!index}" style="width:0px;">Progress: 00:00</div>
+                            </div>  
+                        </div>
+                        
+                        <div class="col-sm-2" align="center">
+                            <apex:outputPanel >
+                                <input id = "playbtn{!index}" style="height:35px;" type="Button" value = "Play" class="slds-button slds-button_brand" onclick="getRecording(this, {!index}, '{!avairecordid[item].audio_file}');"/>
+                                <audio id="audio{!index}" controls="controls"  >
+                                    <source Id="playerSrc{!index}" src="" type="audio/mp3" />
+                                </audio> 
+                            </apex:outputPanel>
+                        </div>
+                        
+                        <div class="col-sm-1" align="center">
+                            <button Id="saveButton{!index}" onclick="saveAll('{!index}','{!avairecordid[item].audio_file}')" class="slds-button slds-button_success" style="height:35px;">Save</button>
+                            <button Id="DeleteButton{!index}" onclick="Deleteclick('{!index}')" class="slds-button slds-button_destructive" style="height:35px;">Delete</button>
+                            <input type='hidden' value='{!avairecordid[item].Id}' id='recordids{!index}'/>
+                            <img Id="loader{!index}" src="/img/loading.gif" />
+                            <label id="status{!index}"/>
+                            <audio id="audio" controls="controls" Style="visibility: hidden" >
+                                <source Id="playerSrc" src="" type="audio/mp3" />
+                                <div id="status">
+                                    Status: <span>paused</span>
+                                </div>
+                                <div id="duration">
+                                    Duration: <span>0</span>
+                                </div>
+                                <div id="current-time">
+                                    Current time: <span>0</span>
+                                </div>
+                            </audio> 
+                            
+                        </div>
+                        
+                        <a id="save{!index}" href="#" download="myRecording00.wav"/>
+                        
+                        <div class="col-sm-3" align="center">
+                            <input type="textarea" rows="4" class="slds-textarea" id = "description{!index}" name="description" value="{!discriptionmap[item]}" />
+                            <apex:variable var="index" value="{!index+1}"/>
+                        </div>
+                        
+                    </div>      
+                </tbody>
+                <hr/>
+            </apex:repeat>
+            
+        </table>
+        
+    </div>
+    
+    <script>
+    
+    $('[id*="loader"]').hide();
+    $('[id*="audio"]').hide();
+    $('[id*="saveButton"]').hide();
+    $('[id*="DeleteButton"]').hide();
+    $('[id*="saveBtn"]').prop('disabled',true);
+    $('[id*="recordBtn"]').prop('disabled',false);
+    $('[id*="pauseBtn"]').prop('disabled',true);
+    $('[id*="stopBtn"]').prop('disabled',true);
+    $('[id*="playbtn"]').prop('disabled',true);
+    
+    <apex:repeat value="{!rcrdings}" var="avails">
+        $("#recordBtn"+{!avails}).prop('disabled',true);
+    $("#DeleteButton"+{!avails}).show();
+    $("#playbtn"+{!avails}).prop('disabled',false);
+    </apex:repeat>
+    
+    if('{!$Profile.Name}'!='System Administrator'){
+        $('[id*="description"]').prop('disabled',true);
+    }
+    
+    
+    </script>
+    <script src="{!urlfor($Resource.microm, "microm-master/dist/microm.js")}"/>
+    <!--   <script src="{!urlfor($Resource.microm, "microm-master/example.js")}"></script>-->
+    <!-- <apex:includeScript value="{!$Resource.Examplenew}"/>-->
+    
+</apex:page>

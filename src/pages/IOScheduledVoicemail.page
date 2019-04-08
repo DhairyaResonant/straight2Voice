@@ -1,0 +1,32 @@
+<apex:page lightningStylesheets="true" docType="html-5.0" id="p1" standardStylesheets="false" action="{!pageAction}" controller="IOScheduleVoicemailController" >
+    <apex:stylesheet value="{!URLFOR($Resource.SLDS1050, 'styles/salesforce-lightning-design-system.min.css')}" />
+    <style>
+        .pbButton{
+        	text-align:center !important;
+        	padding-right:29% !important;
+        }
+    </style>
+    <apex:form >
+        <apex:pageBlock title="List of Scheduled Voicemails">
+            <apex:pageBlockTable value="{!objects}" var="obj" columns="7">
+                <apex:variable value="{!obj.id}" var="index"/>
+                <apex:column headerValue="Name" > {!obj.name}  </apex:column>
+                <apex:column headerValue="Created Date" > {!obj.created_at}  </apex:column>
+                <apex:column headerValue="Delay" > {!obj.delay}  </apex:column>
+                <apex:column headerValue="Option Schedule" > {!obj.option_schedule}  </apex:column> 
+                <apex:column headerValue="Schedule Start Date" > {!obj.schedule_date_to_start}  </apex:column>
+                <apex:column headerValue="Schedule Frequency" > {!obj.schedule_frequency}  </apex:column>
+                <apex:column headerValue="Status" > {!obj.status}  </apex:column>
+                <apex:column headerValue="Delete">
+                   <button Id="DeleteButton{!index}" onclick="Deleteclick('{!index}')" class="slds-button slds-button_destructive" style="height:35px;">Delete</button>
+                </apex:column>
+            </apex:pageBlockTable>
+            <apex:pageBlockButtons >
+                
+                <apex:commandButton disabled="{!prev == null}" value="Prev" action="{!prev}" />
+                <apex:commandButton disabled="{!next == null}" value="Next" action="{!next}" />
+                
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

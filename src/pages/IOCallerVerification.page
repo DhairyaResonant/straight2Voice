@@ -1,0 +1,15 @@
+<apex:page docType="html-5.0" id="p1" standardStylesheets="true" controller="IOCallerVerification" action="{!pageAction}">
+    <apex:form >
+    		<apex:pageBlock title="Verification">
+                 <apex:pageMessages /> 
+                <apex:pageBlockSection id="pbs1" columns="1" >
+                    <apex:commandButton value="Send verfication code  " id="theButton" action="{!requestCallerIDCode}" rendered="{!!verficationCodecheck}" />
+                  
+                    <apex:pageBlockSection id="pbs2" columns="1" rendered="{!verficationCodecheck}"> 
+                        <apex:inputText label="Verfication code" required="true" id="verificationCodeNumber" value="{!verificationCodeNumber}" /> 
+                        <apex:commandButton value="Enter verification code" id="theButton" action="{!inputVerificationcode}" />
+                    </apex:pageBlockSection>
+                </apex:pageBlockSection>
+        	</apex:pageBlock>
+    </apex:form>
+</apex:page>

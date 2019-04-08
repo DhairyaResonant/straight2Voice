@@ -1,0 +1,8 @@
+<apex:page sidebar="false" showHeader="false" docType="html-5.0">
+    <apex:stylesheet value="{!URLFOR($Resource.SLDS1050, 'styles/salesforce-lightning-design-system.min.css')}" />
+    <apex:form >
+        
+            <div class="slds-text-color_error">Please login to your S2V Account.</div>
+        
+    </apex:form>
+</apex:page>

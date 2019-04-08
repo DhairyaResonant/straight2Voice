@@ -1,0 +1,56 @@
+<apex:page lightningStylesheets="true" docType="html-5.0" id="p1" standardStylesheets="true" controller="IOCallerController"  action="{!pageAction}" tabStyle="S2V_Return_Number__tab"  >
+    <apex:includeScript value="{!$Resource.Jquery}"/>
+    <script> 
+    function VerifyPhone(verifyID)
+    {
+        window.location.replace("/apex/IOCallerVerification?id="+verifyID);
+        
+    }
+    </script>
+    <style type="text/css">
+        .pbTitle {
+        white-space: nowrap;
+        }
+    </style>
+    
+    
+    <apex:form >
+        <apex:pageBlock title="This is the number from where the voicemail came from. Your landline or mobile. Special numbers are not permitted."  >
+            <apex:pageMessages /> 
+            <apex:pageBlockSection id="pbs1" columns="1" > 
+                <apex:inputText label="Return Number :" required="true" id="callerIDNumber" value="{!callerIDNumber}" /> 
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Country Code :</apex:outputLabel>  
+                    <apex:selectList id="countryCode"  size="1" value="{!callerCodeOption}" >
+                        <apex:selectOptions value="{!Allcountrycode}" />
+                       
+                    </apex:selectList> 
+                </apex:pageBlockSectionItem> 
+                
+            </apex:pageBlockSection> 
+            <apex:pageBlockButtons location="bottom">
+                <apex:commandButton value="Add Number"  id="theButton" action="{!createCallerID}"   />
+            </apex:pageBlockButtons>
+            
+            
+        </apex:pageBlock> 
+        
+        
+        
+        <apex:pageBlock title="Once you have added your number you will need to click verify to call the number to verify that you own it">
+            
+            <apex:pageBlockTable value="{!objects}" var="obj" columns="7">
+                <apex:column headerValue="Caller ID" > {!obj.callerID}  </apex:column> 
+                <apex:column headerValue="verified" rendered="{!IF(obj.verified=true,false,true)}" > 
+                    <input type="button" class="btn" value="Click to Verfiy" onClick="VerifyPhone('{!obj.id}')"/>
+                </apex:column> 
+                <apex:column headerValue="verified" rendered="{!IF(obj.verified=true,true,false)}" > 
+                    true
+                </apex:column> 
+            </apex:pageBlockTable> 
+        </apex:pageBlock>
+        
+    </apex:form>
+    
+</apex:page>

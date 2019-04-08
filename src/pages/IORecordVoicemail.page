@@ -1,0 +1,449 @@
+<apex:page lightningStylesheets="true" tabStyle="S2V_Recordings__tab" controller="IORecordVoicemailController" action="{!pageAction}" >
+    
+    <apex:includeScript value="{!$Resource.Jquery}"/>
+    <apex:includeScript value="../../soap/ajax/26.0/connection.js" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <script>
+    var option = 0;
+    var theInterval;
+    var counter = 0;
+    var limitDuration = 120;
+    var recordingStarted = false;
+    
+    function alertIploadComplete()
+    {
+     
+        $( "#status" ).text('Uploaded Successfully!');
+        setTimeout(function(){
+            $( "#status" ).text('');
+            $( "#loader" ).hide();
+            location.reload();
+        }, 1000);
+        console.log('Done...');
+    }
+    var base64;
+    var chunks;
+    var nChunk = 0;
+    var pureBlob;
+    function setBlob(b)
+    {
+       
+        pureBlob = b;
+    }
+    function convertDataURIToBinary(dataURI) {
+     
+        var BASE64_MARKER = ';base64,';
+        var base64Index = dataURI.indexOf(BASE64_MARKER) + BASE64_MARKER.length;
+        var base64 = dataURI.substring(base64Index);
+        var raw = window.atob(base64);
+        var rawLength = raw.length;
+        var array = new Uint8Array(new ArrayBuffer(rawLength));
+        
+        for(i = 0; i < rawLength; i++) {
+            array[i] = raw.charCodeAt(i);
+        }
+        return array;
+    }
+    function getPlayerReady()
+    {
+      
+        var reader = new window.FileReader();
+        reader.readAsDataURL(pureBlob);
+        reader.onloadend = function() {
+            base64 = reader.result;
+            var binary= convertDataURIToBinary(base64);
+            var blob=new Blob([binary], {type : 'audio/mp3'});
+            var blobUrl = URL.createObjectURL(blob);
+            $("#playerSrc").attr("src", blobUrl);
+            $("#audio")[0].pause();
+            $("#audio")[0].load();//suspends and restores all audio element
+            
+            base64 = base64.split(',')[1];
+            $( "#loader" ).hide();
+            $( "#status" ).text('');
+        }
+    }
+    function getfileName()
+    {
+       
+        return $('#recName').val().replace(" ","_")+".mp3";
+    }
+    function startProgressBar()
+    {
+       
+        theInterval = setInterval(function(){
+            counter++;
+            var percent = (counter/limitDuration)*100;
+            $( "#bar" ).prop("style","width:"+percent+"%");
+            var minute = "0"+Math.floor(counter/60);
+            var second = counter % 60;
+            second = (second >=10 ? "" : "0")+second;
+            $( "#bar" ).html(minute+":"+second);
+            if(counter == limitDuration)
+            {
+                $('#stopBtn').trigger('click');
+            }
+        }, 1000);
+    }
+    
+    function stopProgressBar()
+    {
+    
+        clearInterval(theInterval);
+    }
+    
+    function onRecordClick()
+    {
+      
+        option = 1;
+        if(!recordingStarted) {
+            recordingStarted = !recordingStarted;
+        }
+        $( "#recordBtn" ).prop('disabled',true);
+        $( "#pauseBtn" ).prop('disabled',false);
+        $( "#stopBtn" ).prop('disabled',false);
+        startProgressBar();
+    }
+    
+    function onPauseClick()
+    {
+     
+        option = 1;
+        $( "#recordBtn" ).prop('disabled',false);
+        $( "#pauseBtn" ).prop('disabled',true);
+        $( "#stopBtn" ).prop('disabled',false);
+        stopProgressBar();
+    }
+    
+    function onStopClick()
+    {
+      
+        option = 1;
+        $( "#recordBtn" ).prop('disabled',false);
+        $( "#pauseBtn" ).prop('disabled',true);
+        $( "#stopBtn" ).prop('disabled',true);
+        $( "#saveBtn" ).prop('disabled',false);
+        
+        $( "#loader" ).show();
+        $( "#status" ).text('Encoding...');
+        
+        recordingStarted = !recordingStarted;
+        stopProgressBar();
+        counter = 0;
+    }
+    
+    function callVoiceRecord()
+    { 
+      
+        var countryCode = $('#CountryCode').val();
+       
+        
+        if($('#phoneNumberVoice').val()  == "")
+        {
+            alert('Please enter phone number');
+            return;
+        } 
+        if($('#recName').val().replace(" ","_") == "")
+        {
+            alert('Please enter audio name');
+            return;
+        }
+        
+        
+        if(Math.round($('#phoneNumberVoice').val()) != $('#phoneNumberVoice').val()) {
+            alert("Please enter numbers in phone field.");
+            return;
+        }
+        //status.set
+        //loader.show
+        
+        $( "#loader" ).show();
+        $( "#status" ).text('Processing...');
+        
+        var bodyVoice = {"name":getfileName,"phone":$('#phoneNumberVoice').val(),"codephone:":countryCode,"SaleslforceUserID":"{!$User.Id}"};
+        
+        $.ajax({
+            "async": true,
+            "crossDomain": true,
+            "url": "{!JSENCODE(setting.url__c)}/api/v1/recording/",
+            "method": "POST",
+            "headers": {
+                "authorization": "{!authorizationHeader}"
+            },
+            "data": bodyVoice, 
+            error: function(){
+                alert('Try Again!');
+            }
+        }).done(function(data) {
+            console.log(data);
+            alertIploadComplete();
+        }); 
+    }
+    function onSaveClick(isRecording)
+    {
+   
+        if($('#recName').val().replace(" ","_") == "")
+        {
+            alert('Please enter audio name');
+            return;
+        }
+        $( "#loader" ).show();
+        $( "#status" ).text('Processing...');
+        $( "#saveBtn" ).prop('disabled',true);
+        $( "#recordBtn" ).prop('disabled',false);
+        $( "#pauseBtn" ).prop('disabled',true);
+        $( "#stopBtn" ).prop('disabled',true);
+        //saveToAttachment();
+        
+        var fd = new FormData();
+        var file;
+        if(isRecording)
+        {
+            file = new File([pureBlob], 'sound.mp3', {type: pureBlob.type, lastModified: Date.now()});
+        }
+        else
+        {
+            file = $('#file').prop('files')[0];
+        }
+        fd.append("name", getfileName());
+        fd.append('file', file );
+        fd.append("SaleslforceUserID","{!$User.Id}");
+        fd.append("RecordingNumber","16726272");
+        fd.append("description","testrecord");
+        
+        $.ajax({
+            "async": true,
+            "crossDomain": true,
+            "url": "{!JSENCODE(setting.url__c)}/api/v1/upload-audio/",
+            "method": "POST",
+            "headers": {
+                "authorization": "{!authorizationHeader}"
+            },
+            "processData": false,
+            "contentType": false,
+            "mimeType": "multipart/form-data",
+            "data": fd
+        }).done(function(data) {
+            console.log(data);
+            alertIploadComplete();
+        });
+     
+    }
+    function getRecording(ele, index, link)
+    {
+        /*
+            $.ajax({
+                "async": true,
+                  "crossDomain": true,
+                  "url": "{!JSENCODE(setting.url__c)}/download/?filename=audio/JMNDHD325D_Ashgrove.wav",
+                  "method": "GET",
+                  "headers": {
+                    "authorization": "{!authorizationHeader}"
+                  }
+            }).done(function(data) {
+                   console.log(data);
+            });
+            */
+        
+            ele.value="Waiting...";
+            ele.disabled = true;
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.IORecordVoicemailController.getRecBuffer}',
+                link, 
+                function(result, event){
+                    if (event.status) {
+                        //alert('success'); 
+                        
+                        document.getElementById('playerSrc'+index).src = "data:audio/wav;base64,"+result;
+                        document.getElementById('audio'+index).style.visibility = 'visible';
+                        document.getElementById('audio'+index).load();
+                        ele.style.visibility = 'hidden';
+                        
+                    } else if (event.type === 'exception') {
+                        ele.style.visibility = 'hidden';
+                        alert('This File is Corrupt');
+                        
+                    } else {
+                        ele.style.visibility = 'hidden';
+                        alert('This File is Corrupt');
+                    }
+                }, 
+                {escape: true}
+            );
+            
+        }
+    function saveAll()
+    {
+        if(option == 1)
+        {
+            onSaveClick(true);
+        }
+        else if(option == 2)
+        {
+            onSaveClick(false);
+        }
+            else if(option == 3)
+            {
+                callVoiceRecord();
+            }
+    }
+    </script>
+    <style>
+        Button:disabled {
+        background: #aaa;
+        }
+        
+        
+        .w3-light-grey,.w3-hover-light-grey:hover,.w3-light-gray,.w3-hover-light-gray:hover{color:#000!important;background-color:#f1f1f1!important}
+        .w3-container{padding:0px 0px}
+        .w3-green,.w3-hover-green:hover{color:#fff!important;background-color:#4CAF50!important}
+        .w3-bar-block.w3-center .w3-bar-item{text-align:center}
+        
+        #bar
+        {
+        overflow: visible;
+        white-space: nowrap;
+        padding: 15px 0px 15px 0px;
+        }
+    </style> 
+    
+    <apex:pageBlock title="Create New Recording with one of these options" >
+        <apex:pageBlockSection title="Create Voice Message" collapsible="false">
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Name" />  
+                <input type="text" label="File Name"   id="recName"   /> 
+            </apex:pageBlockSectionItem>
+        </apex:pageBlockSection>
+        
+        <apex:pageBlockSection title="Option 1: Record message using the microphone in your computer" columns="1"  >
+            <apex:pageBlockSectionItem >
+                <apex:outputPanel >
+                    <button Id="recordBtn" ><b style="color:red">⚫</b> Record</button>
+                    <!--<button Id="pauseBtn" ><b style="color:green">❚❚</b> Pause</button>-->
+                    <button Id="stopBtn" ><b style="font-size: 13px;">∎</b> Stop</button>
+                    <br />
+                    <div style="visibility: hidden;">
+                        
+                        <div id="status">
+                            Status: <span>paused</span>
+                        </div>
+                        <div id="duration">
+                            Duration: <span>0</span>
+                        </div>
+                        <div id="current-time">
+                            Current time: <span>0</span>
+                        </div>
+                        <a id="save" href="#" download="myRecording00.wav">Download</a>
+                    </div>
+                </apex:outputPanel>
+                <apex:outputPanel >
+                    
+                    <div class="w3-light-grey" >
+                        <div Id="bar" align="center" class="w3-container w3-green w3-center" style="width:0px;">Progress: 00:00</div>
+                    </div>
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Play Recording" />
+                <div>
+                    <audio id="audio" controls="controls" >
+                        <source Id="playerSrc" src=""
+                                type="audio/mp3" />
+                    </audio>
+                </div>
+            </apex:pageBlockSectionItem>
+        </apex:pageBlockSection>
+        <!--        
+<apex:facet name="footer">
+<div class="w3-light-grey">
+<div Id="bar" align="center" class="w3-container w3-green w3-center" style="width:0px">Progress: 00:00</div>
+</div>
+</apex:facet>
+-->
+        <apex:pageBlockButtons location="bottom">
+            
+            <button Id="saveButton" onclick="saveAll()" >Save</button>
+            <!--
+<button Id="saveBtn" onclick="onSaveClick(true)"><b style="font-size: 13px;">↑</b> Upload Recording</button>
+<button Id="saveFileBtn" onclick="onSaveClick(false)"><b style="font-size: 13px;">↑</b> Upload File</button>
+<button Id="callVoiceButton" onclick="callVoiceRecord()"  ><b style="font-size: 13px;" >☎</b> Call for Recording</button> 
+-->            
+            <!--<apex:commandButton action="{!callVoiceRecord}" value="☎ Call for Recordings"   />-->
+            
+            <img Id="loader" src="/img/loading.gif" /><label id="status"></label>
+        </apex:pageBlockButtons> 
+        
+        <apex:pageBlockSection title="Option 2: Upload a recorded file in mp3 or wav format">
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="(OR)Select File" />
+                <input type="file" id="file" name="file" onchange="option = 2;" />
+            </apex:pageBlockSectionItem>
+        </apex:pageBlockSection>
+        
+        <apex:pageBlockSection title="Option 3: Call your phone to make a recording" columns="1">
+            <b>Note: This will charge you 1 credit</b>
+            
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel >Country Code </apex:outputLabel>  
+                <select  id="CountryCode" name="CountryCode">
+                    <option value="AU">AU</option>
+                    <option value="CA">CA</option> 
+                </select>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >  
+                <apex:outputLabel value="Phone number for voice Recording" />   
+                <!-- <apex:inputText label="Phone number for voice Recordings"   id="phoneNumberVoice" value="{!phoneNumberVoice}" /> --> 
+                <input type="text" id="phoneNumberVoice" onKeyDown="option = 3;" label="Phone number for voice Recording"  /> 
+            </apex:pageBlockSectionItem>
+        </apex:pageBlockSection>
+        
+        <br/><br/> 
+        
+    </apex:pageBlock> 
+    
+    <apex:form >
+        <apex:pageBlock id="pb1" title="{!$CurrentPage.parameters.name}My Recordings"  >
+            <apex:variable var="sr" value="{!0}" />
+            <apex:pageBlockTable value="{!objects}" var="item" >
+                
+                <apex:column headerValue="Id">
+                    <apex:variable var="sr" value="{!sr + 1}" />
+                    {!item.id}
+                </apex:column>
+                <apex:column headerValue="Name">
+                    {!item.name} 
+                </apex:column>  
+                <apex:column headerValue="Audio Message" >
+                    <input type="Button" value = "Play" onclick="getRecording(this, {!sr},'{!item.audio_file}');" class="btn" />
+                    <audio id="audio{!sr}" controls="controls" Style="visibility: hidden" >
+                        <source Id="playerSrc{!sr}" src=""
+                                type="audio/mp3" />
+                    </audio> 
+                </apex:column>
+                
+            </apex:pageBlockTable> 
+            <apex:pageBlockButtons >
+                <apex:commandButton disabled="{!prev == null}" value="Prev" action="{!prev}" />
+                <apex:commandButton disabled="{!next == null}" value="Next" action="{!next}" />
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+        <!-- <apex:pageBlockButtons >
+<apex:commandButton disabled="{!prev == null}" value="Prev" action="{!prev}" />
+<apex:commandButton disabled="{!next == null}" value="Next" action="{!next}" />
+</apex:pageBlockButtons>-->
+    </apex:form>
+    
+    <script>
+    $( "#loader" ).hide();
+    $( "#saveBtn" ).prop('disabled',true);
+    $( "#recordBtn" ).prop('disabled',false);
+    $( "#pauseBtn" ).prop('disabled',true);
+    $( "#stopBtn" ).prop('disabled',true);
+    
+    </script>
+    <script src="{!urlfor($Resource.microm, "microm-master/dist/microm.js")}"></script>
+    <script src="{!urlfor($Resource.microm, "microm-master/example.js")}"></script>
+</apex:page>

@@ -1,0 +1,19 @@
+<apex:page docType="html-5.0" id="p1" standardStylesheets="true"  controller="IOPhoneController"  >
+    <apex:form >
+        
+        <apex:pageBlock title="Insert phone record in Phonebook">
+			<apex:pageMessages />             
+            <apex:pageBlockSection id="pbs1" columns="1"> 
+                <apex:inputText label="Name" required="true" id="Username" value="{!name}"/>  
+                <apex:inputText label="Phone" required="true" id="number" value="{!phoneNumber}"  />  
+                <apex:commandButton value="Insert Phone " id="theButtons" style="width: 98px;
+                                                                                 margin-left: 222px; " action="{!insertPhoneNumber}" />  
+            </apex:pageBlockSection>
+            
+        </apex:pageBlock>
+    </apex:form>
+    <apex:pageBlock title="Phone List">
+         
+        
+    </apex:pageBlock>
+</apex:page>

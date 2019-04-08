@@ -1,0 +1,32 @@
+<apex:page controller="S2VActiveSchedules">
+    <apex:form >
+        <apex:pageBlock rendered="{!IF(AND(lstS2VVoiceMails != null,lstS2VVoiceMails.size > 0),TRUE,FALSE)}">
+            <apex:pageBlockTable value="{!lstS2VVoiceMails}" var="s2v">
+                <apex:column headerValue="Action">
+                    <!--<apex:outputLink value="/apex/S2VVoiceMailSendPage?sid={!s2v.Id}">Edit</apex:outputLink> | --><apex:outputLink onclick="return delRcrd('{!s2v.Id}');"> Del</apex:outputLink> 
+                </apex:column>
+                <apex:column value="{!s2v.Object_Name__c}" />
+                <apex:column value="{!s2v.Reference_Field_Lable__c}" />
+                <apex:column value="{!s2v.Recording_Name__c}" />
+                <apex:column value="{!s2v.CreatedBy.Name}" />
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+        <apex:pageBlock rendered="{!IF(OR(lstS2VVoiceMails == null,lstS2VVoiceMails.size == 0),TRUE,FALSE)}">
+            There is no template available for sending voicemail.
+        </apex:pageBlock>
+        <apex:actionFunction name="deleteRecord" action="{!deleteRecord}" reRender="">
+            <apex:param name="param1" assignTo="{!recId}" value=""/>
+        </apex:actionFunction>
+    </apex:form>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script>
+        function delRcrd(recId){
+            var r = confirm("Are you sure ?");
+            if(r == true){
+                deleteRecord(recId);
+                return true;
+            }
+            return false;
+        }    
+    </script>
+</apex:page>

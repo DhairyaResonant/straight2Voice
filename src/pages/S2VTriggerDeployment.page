@@ -1,0 +1,26 @@
+<!-- This page is created by Resonant team to make zip file for the TRIGGERS -->
+<apex:page controller="S2VTriggerDeploymentController">
+    <apex:includeScript value="{!URLFOR($Resource.jszip, '/jszip.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.jszip, '/jszip-load.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.jszip, '/jszip-deflate.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.jszip, '/jszip-inflate.js')}"/>
+    <apex:form id="form">
+        <pre>{!TriggerCode}</pre><br/><br/>
+        <pre>{!TriggerTestCode}</pre>
+        
+        <apex:actionFunction name="deployZip" action="{!deployZip}" rerender="form">
+                <apex:param name="data" assignTo="{!ZipData}" value=""/>
+            </apex:actionFunction>
+        <c:zip name="generateZip" oncomplete="deployZip(data);">
+            <c:zipEntry path="package.xml" data="{!PackageXml}"/>
+            <!--<c:zipEntry path="destructiveChanges.xml" data="{!DestructiveChangesXml}" rendered="{!Deployed}"/> -->
+           <!-- <c:zipEntry path="{!PathTriggerTestCode}" data="{!TriggerTestCode}" />-->
+            <c:zipEntry path="{!PathTriggerTestCodeMetadata}" data="{!TriggerTestCodeMetadata}" />
+            <c:zipEntry path="{!PathTriggerTestCode}" data="{!TriggerTestCode}" />
+            <c:zipEntry path="{!PathTriggerCodeMetadata}" data="{!TriggerCodeMetadata}" />
+            <c:zipEntry path="{!PathTriggerCode}" data="{!TriggerCode}" />
+            
+        </c:zip>
+        <apex:commandButton onclick="generateZip();" action="{!sendToListPage}"  value="Deploy Trigger Code"/>
+    </apex:form>
+</apex:page>

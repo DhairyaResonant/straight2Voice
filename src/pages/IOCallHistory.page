@@ -1,0 +1,20 @@
+<apex:page lightningStylesheets="true" docType="html-5.0" id="p1" tabStyle="S2V_Call_History__tab"  standardStylesheets="true" action="{!pageAction}" controller="IOCallHistoryController" >
+    <apex:form >
+        <apex:pageBlock title="{!$CurrentPage.parameters.campaign_name} Call History" > 
+            <apex:pageBlockTable value="{!objects}" var="obj" columns="7">
+                <apex:column headerValue="Call Start" > {!LEFT(obj.call_start, 19)}  </apex:column>
+                <apex:column headerValue="Country" > {!obj.country}  </apex:column>
+                <apex:column headerValue="Duration" > {!obj.duration}  </apex:column>
+                <apex:column headerValue="Phone Number" > {!obj.ph_number}  </apex:column>
+                <apex:column headerValue="Recipient" > {!obj.recipient}  </apex:column> 
+                <apex:column headerValue="Result" > {!obj.result}  </apex:column>
+            </apex:pageBlockTable>
+            <apex:pageBlockButtons >
+                
+                <apex:commandButton disabled="{!prev == null}" value="Prev" action="{!prev}" />
+                <apex:commandButton disabled="{!next == null}" value="Next" action="{!next}" />
+                
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

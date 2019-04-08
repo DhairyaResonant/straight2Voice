@@ -1,0 +1,43 @@
+<apex:page docType="html-5.0" id="p1" tabStyle="Voicemail_drop_Account__tab" standardStylesheets="true" controller="IOMyAccount">
+        
+    <apex:form id="f1"> 
+        <apex:pageBlock id="pb1" title="Login "  rendered="{!!loginFlag}">
+            <apex:pageMessages />  
+            <apex:pageBlockSection id="pbs1" columns="1"> 
+               
+                <apex:inputText label="Username" required="true" id="Username" value="{!username}" />  
+                <apex:inputSecret label="Password" required="true" id="password" value="{!password}" />  
+                <apex:selectList label="Country-code" styleClass="slds-input slds-combobox__input" value="{!selectedcountrycode}" id="countrycodes" size="1" >
+                    <apex:selectOptions value="{!Allcountrycode}" />
+                </apex:selectList>
+                
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockButtons location="bottom">
+               <apex:commandButton value="Login " id="theButton" action="{!sendRequest}" /> 
+               <apex:outputLink target="_blank" value="{!signupUrl}"><h3>Signup</h3> </apex:outputLink>
+            </apex:pageBlockButtons> 
+        </apex:pageBlock>
+        <!--after login -->    
+        <apex:pageBlock id="pb2"   rendered="{!loginFlag}"  title="Account Details" >
+             
+            <apex:pageBlockButtons location="bottom" id="dS">
+                <apex:commandButton value="Purchase Credit "  onClick="window.open('{!$Setup.S2V_Settings1__c.url__c}/recharge-request/');" /> 
+                <apex:commandButton value="Logout " id="theButton" action="{!logout}" /> 
+            </apex:pageBlockButtons> 
+            
+                <apex:pageBlockSection columns="1"  >
+                    <apex:pageblocksectionitem >
+                        <apex:outputLabel ></apex:outputLabel>
+                        <apex:image value="{!avatar}" style="width: 100px;"/>
+                    </apex:pageblocksectionitem>
+                    <apex:outputText id="outputUsername" label="Name : "  value="{!acc.first_name} {!acc.last_name}"/> 
+                    <apex:outputText id="outputLastemail" label="Email : " value="{!acc.email}"/>
+                    <apex:outputText id="Country-code" label="Country-code: " value="{!selectedcountrycode }"/>
+                    <apex:outputText id="outputLastPhone" label="Phone : " value="{!acc.phone}"/>
+                    <apex:outputText id="outputLastCredit" label="Credit : " value="{!acc.credit}"/>
+                </apex:pageBlockSection> 
+        </apex:pageBlock>
+            
+        </apex:form>
+</apex:page>
