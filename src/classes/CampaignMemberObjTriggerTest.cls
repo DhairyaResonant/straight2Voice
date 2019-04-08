@@ -1,3 +1,4 @@
+//Test class for campaignmember trigger
 @IsTest
 private class CampaignMemberObjTriggerTest
 {
