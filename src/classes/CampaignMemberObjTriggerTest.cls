@@ -1,4 +1,5 @@
 
+//adding for gitbut
 @IsTest
 private class CampaignMemberObjTriggerTest
 {
